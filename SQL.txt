@@ -1,0 +1,57 @@
+-- Tabela Usuarios
+CREATE TABLE Usuarios (
+    id INT PRIMARY KEY,
+    nome VARCHAR(100),
+    email VARCHAR(100) UNIQUE,
+    senha VARCHAR(100),
+    endereco VARCHAR(255),
+    tipo CHAR(2) CHECK (tipo IN ('PF', 'PJ')) -- PF para Pessoa Física, PJ para Pessoa Jurídica
+);
+
+-- Tabela FormasPagamento
+CREATE TABLE FormasPagamento (
+    id INT PRIMARY KEY,
+    descricao VARCHAR(100)
+);
+
+-- Tabela Pedidos
+CREATE TABLE Pedidos (
+    id INT PRIMARY KEY,
+    usuario_id INT,
+    data_pedido DATE,
+    status VARCHAR(50),
+    FOREIGN KEY (usuario_id) REFERENCES Usuarios(id)
+);
+
+-- Tabela ItensPedido
+CREATE TABLE ItensPedido (
+    id INT PRIMARY KEY,
+    pedido_id INT,
+    produto_id INT,
+    quantidade INT,
+    preco_unitario DECIMAL(10, 2),
+    FOREIGN KEY (pedido_id) REFERENCES Pedidos(id),
+    FOREIGN KEY (produto_id) REFERENCES Produtos(id)
+);
+
+-- Tabela Produtos (continuação)
+ALTER TABLE Produtos ADD categoria VARCHAR(50);
+
+-- Tabela Pagamentos
+CREATE TABLE Pagamentos (
+    id INT PRIMARY KEY,
+    pedido_id INT,
+    forma_pagamento_id INT,
+    valor DECIMAL(10, 2),
+    FOREIGN KEY (pedido_id) REFERENCES Pedidos(id),
+    FOREIGN KEY (forma_pagamento_id) REFERENCES FormasPagamento(id)
+);
+
+-- Tabela Entregas
+CREATE TABLE Entregas (
+    id INT PRIMARY KEY,
+    pedido_id INT,
+    status VARCHAR(50),
+    codigo_rastreio VARCHAR(50),
+    FOREIGN KEY (pedido_id) REFERENCES Pedidos(id)
+);
